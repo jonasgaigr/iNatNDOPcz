@@ -86,20 +86,71 @@ if(!isTRUE(require(gridGraphics, quietly = TRUE))) {
 
 
 # LOAD DATA ----
-# VRSTVA EVL 
+#--------------------------------------------------#
+## Load remote data -----
+#--------------------------------------------------#
+# Borders of Czechia
+czechia_border <- 
+  RCzechia::republika(
+    resolution = "high"
+  ) %>%
+  sf::st_transform(
+    ., 
+    st_crs("+init=epsg:5514")
+  ) 
+
+# Data on protected areas and mapping fields
+endpoint <- "http://gis.nature.cz/arcgis/services/Aplikace/Opendata/MapServer/WFSServer?"
+caps_url <- base::paste0(endpoint, "request=GetCapabilities&service=WFS")
+
+layer_name_evl <- "Opendata:Evropsky_vyznamne_lokality"
+layer_name_mzchu <- "Opendata:Maloplosna_zvlaste_chranena_uzemi__MZCHU_"
+layer_name_sitmap1rad <- "Opendata:Mapovaci_sit_-_deleni_1.radu"
+
+getfeature_url_evl <- paste0(
+  endpoint,
+  "service=WFS&version=2.0.0&request=GetFeature&typeName=", layer_name_evl
+)
+getfeature_url_mzchu <- paste0(
+  endpoint,
+  "service=WFS&version=2.0.0&request=GetFeature&typeName=", layer_name_mzchu
+)
+getfeature_url_sitmap1rad <- paste0(
+  endpoint,
+  "service=WFS&version=2.0.0&request=GetFeature&typeName=", layer_name_sitmap1rad
+)
 
 
-# VRSTVA HRANIC CZ 
-czechia <- st_read("//bali.nature.cz/du/SpravniCleneni/CR/HraniceCR.shp")
-czechia <- st_transform(czechia, CRS("+init=epsg:5514"))
-czechia_line <- st_cast(czechia, "LINESTRING")
+evl <- sf::st_read(getfeature_url_evl) %>%
+  sf::st_transform(
+    ., 
+    st_crs("+init=epsg:5514")
+  ) 
+mzchu <- sf::st_read(getfeature_url_mzchu) %>%
+  sf::st_transform(
+    ., 
+    st_crs("+init=epsg:5514")
+  )
+sitmap <- sf::st_read(getfeature_url_sitmap1rad) %>%
+  sf::st_transform(
+    ., 
+    st_crs("+init=epsg:5514")
+  ) %>%
+  sf::st_crop(
+    .,
+    czechia_border  # crop by the border of Czechia
+  ) %>%
+  dplyr::select(
+    POLE
+  ) %>%
+  dplyr::rename(
+    SITMAP_1 = POLE
+  )
 
-# seznam EVL a predmetu ochrany ----
+# Sites where the species are target features
 rn2kcz::load_n2k_sites()
-sites_habitats <- sites_subjects %>%
-  filter(feature_type == "stanoviště")
 
-# load ndop data ----
+# load occurrence data ----
 data_luccer <- read.csv2(
   "Data/Input/nalezy-luccer.csv",
   fileEncoding = "Windows-1250"
@@ -108,6 +159,7 @@ data_cuccin <- read.csv2(
   "Data/Input/nalezy-cuccin.csv", 
   fileEncoding = "Windows-1250"
   )
+
 data_evd <- dplyr::bind_rows(
   data_luccer,
   data_cuccin
@@ -124,7 +176,11 @@ data_evd <- dplyr::bind_rows(
     ., 
     coords = c("X", "Y"), 
     crs = "+init=epsg:5514"
-    )
+    ) %>%
+  sf::st_intersection(
+    .,
+    sitmap
+  )
 
 data_osmia <- read.csv2(
   "Data/Input/nalezy-osmia.csv", 
@@ -150,7 +206,11 @@ data_hym <- dplyr::bind_rows(
     ., 
     coords = c("X", "Y"), 
     crs = "+init=epsg:5514"
-    )
+    ) %>%
+  sf::st_intersection(
+    .,
+    sitmap
+  )
 
 data_hym_rl <- read.csv2(
   "Data/Input/nalezy-hym-rl.csv", 
@@ -168,4 +228,8 @@ data_hym_rl <- read.csv2(
     ., 
     coords = c("X", "Y"),
     crs = "+init=epsg:5514"
-    )
+    ) %>%
+  sf::st_intersection(
+    .,
+    sitmap
+  )
