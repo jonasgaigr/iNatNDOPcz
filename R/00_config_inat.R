@@ -190,9 +190,19 @@ data_andrena <- read.csv2(
   "Data/Input/nalezy-andrena.csv", 
   fileEncoding = "Windows-1250"
   )
+data_halictus <- read.csv2(
+  "Data/Input/nalezy-halictus.csv", 
+  fileEncoding = "Windows-1250"
+)
+data_bombus <- read.csv2(
+  "Data/Input/nalezy-bombus.csv", 
+  fileEncoding = "Windows-1250"
+)
 data_hym <- dplyr::bind_rows(
   data_osmia,
-  data_andrena
+  data_andrena,
+  data_halictus,
+  data_bombus
   ) %>%
   dplyr::mutate(
     DATUM_OD = as.Date(DATUM_OD, format = '%d.%m.%Y'),
