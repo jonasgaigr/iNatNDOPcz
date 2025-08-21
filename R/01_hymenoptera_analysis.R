@@ -14,7 +14,7 @@ inat_hym_sitmap0 <-
   dplyr::reframe(
     celkem_sitmap_0 = n(),
     sitmap_0_plne_inat = sum(proc_inat == 1),
-    procento_0_plne_inat = sitmap_0_plne_inat / celkem_sitmap_0
+    procento_0_plne_inat = sitmap_0_plne_inat / celkem_sitmap_0 * 100
   ) %>%
   dplyr::arrange(
     desc(procento_0_plne_inat)
@@ -35,7 +35,7 @@ inat_hym_sitmap1 <-
   dplyr::reframe(
     celkem_1_sitmap = n(),
     sitmap_1_plne_inat = sum(proc_inat == 1),
-    procento_1_plne_inat = sitmap_1_plne_inat / celkem_1_sitmap
+    procento_1_plne_inat = sitmap_1_plne_inat / celkem_1_sitmap * 100
   ) %>%
   dplyr::arrange(
     desc(procento_1_plne_inat)
@@ -78,7 +78,7 @@ inat_hym_rl_sitmap0 <-
   dplyr::reframe(
     celkem_sitmap_0 = n(),
     sitmap_0_plne_inat = sum(proc_inat == 1),
-    procento_0_plne_inat = sitmap_0_plne_inat / celkem_sitmap_0
+    procento_0_plne_inat = sitmap_0_plne_inat / celkem_sitmap_0 * 100
   ) %>%
   dplyr::arrange(
     desc(procento_0_plne_inat)
@@ -99,7 +99,7 @@ inat_hym_rl_sitmap1 <-
   dplyr::reframe(
     celkem_1_sitmap = n(),
     sitmap_1_plne_inat = sum(proc_inat == 1),
-    procento_1_plne_inat = sitmap_1_plne_inat / celkem_1_sitmap
+    procento_1_plne_inat = sitmap_1_plne_inat / celkem_1_sitmap * 100
   ) %>%
 dplyr::arrange(
   desc(procento_1_plne_inat)
