@@ -262,7 +262,7 @@ data_bombilius <- read.csv2(
   fileEncoding = "Windows-1250"
 )
 
-data_hym <- dplyr::bind_rows(
+data_dip <- dplyr::bind_rows(
   data_bombilius
 ) %>%
   dplyr::mutate(
@@ -272,7 +272,7 @@ data_hym <- dplyr::bind_rows(
       NEGATIV == "ne" ~ 0,
       NEGATIV == "ano" ~ 1
     )
-  )%>%
+  ) %>%
   sf::st_as_sf(
     ., 
     coords = c("X", "Y"), 
