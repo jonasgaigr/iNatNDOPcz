@@ -176,8 +176,8 @@ data_evd <- dplyr::bind_rows(
   data_cuccin
   ) %>%
   dplyr::mutate(
-    DATUM_OD = as.Date(DATUM_OD, format = '%d.%m.%Y'),
-    DATUM_DO = as.Date(DATUM_DO, format = '%d.%m.%Y'),
+    DATUM_OD = lubridate::ymd(DATUM_OD),
+    DATUM_DO = lubridate::ymd(DATUM_OD),
     NEGATIVNI = dplyr::case_when(
       NEGATIV == "ne" ~ 0,
       NEGATIV == "ano" ~ 1
@@ -217,8 +217,8 @@ data_hym <- dplyr::bind_rows(
   data_bombus
   ) %>%
   dplyr::mutate(
-    DATUM_OD = as.Date(DATUM_OD, format = '%d.%m.%Y'),
-    DATUM_DO = as.Date(DATUM_DO, format = '%d.%m.%Y'),
+    DATUM_OD = lubridate::ymd(DATUM_OD),
+    DATUM_DO = lubridate::ymd(DATUM_OD),
     NEGATIVNI = dplyr::case_when(
       NEGATIV == "ne" ~ 0,
       NEGATIV == "ano" ~ 1
@@ -239,8 +239,8 @@ data_hym_rl <- read.csv2(
   fileEncoding = "Windows-1250"
   ) %>%
   dplyr::mutate(
-    DATUM_OD = as.Date(DATUM_OD, format = '%d.%m.%Y'),
-    DATUM_DO = as.Date(DATUM_DO, format = '%d.%m.%Y'),
+    DATUM_OD = lubridate::ymd(DATUM_OD),
+    DATUM_DO = lubridate::ymd(DATUM_OD),
     NEGATIVNI = dplyr::case_when(
       NEGATIV == "ne" ~ 0,
       NEGATIV == "ano" ~ 1
@@ -266,8 +266,8 @@ data_dip <- dplyr::bind_rows(
   data_bombilius
 ) %>%
   dplyr::mutate(
-    DATUM_OD = as.Date(DATUM_OD, format = '%d.%m.%Y'),
-    DATUM_DO = as.Date(DATUM_DO, format = '%d.%m.%Y'),
+    DATUM_OD = lubridate::ymd(DATUM_OD),
+    DATUM_DO = lubridate::ymd(DATUM_OD),
     NEGATIVNI = dplyr::case_when(
       NEGATIV == "ne" ~ 0,
       NEGATIV == "ano" ~ 1
@@ -281,4 +281,7 @@ data_dip <- dplyr::bind_rows(
   sf::st_intersection(
     .,
     sitmap
-  )
+  ) %>%
+  dplyr::filter(
+    DATUM_OD >= lubridate::ymd("2013-01-01")
+    )
