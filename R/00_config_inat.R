@@ -84,6 +84,16 @@ if(!isTRUE(require(gridGraphics, quietly = TRUE))) {
 } else {
   require(gridGraphics)}
 
+write_csv2_win1250 <- function(x, path, ...) {
+  # write UTF-8 to a temporary file
+  tmp <- tempfile(fileext = ".csv")
+  readr::write_csv2(x, tmp, ...)
+  
+  # re-encode to Windows-1250
+  txt <- readr::read_file(tmp)
+  txt <- iconv(txt, from = "UTF-8", to = "Windows-1250")
+  readr::write_file(txt, path)
+}
 
 # LOAD DATA ----
 #--------------------------------------------------#
