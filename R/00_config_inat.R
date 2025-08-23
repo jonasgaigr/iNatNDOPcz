@@ -256,3 +256,29 @@ data_hym_rl <- read.csv2(
     sitmap
   )
 
+## Diptera ----
+data_bombilius <- read.csv2(
+  "Data/Input/nalezy-bombilius.csv", 
+  fileEncoding = "Windows-1250"
+)
+
+data_hym <- dplyr::bind_rows(
+  data_bombilius
+) %>%
+  dplyr::mutate(
+    DATUM_OD = as.Date(DATUM_OD, format = '%d.%m.%Y'),
+    DATUM_DO = as.Date(DATUM_DO, format = '%d.%m.%Y'),
+    NEGATIVNI = dplyr::case_when(
+      NEGATIV == "ne" ~ 0,
+      NEGATIV == "ano" ~ 1
+    )
+  )%>%
+  sf::st_as_sf(
+    ., 
+    coords = c("X", "Y"), 
+    crs = "+init=epsg:5514"
+  ) %>%
+  sf::st_intersection(
+    .,
+    sitmap
+  )
