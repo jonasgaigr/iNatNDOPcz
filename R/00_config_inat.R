@@ -191,6 +191,9 @@ data_evd <- dplyr::bind_rows(
   sf::st_intersection(
     .,
     sitmap
+  ) %>%
+  dplyr::filter(
+    DATUM_OD >= lubridate::ymd("2013-01-01")
   )
 
 ## Hymenoptera ----
@@ -232,6 +235,9 @@ data_hym <- dplyr::bind_rows(
   sf::st_intersection(
     .,
     sitmap
+  ) %>%
+  dplyr::filter(
+    DATUM_OD >= lubridate::ymd("2013-01-01")
   )
 
 data_hym_rl <- read.csv2(
@@ -254,6 +260,9 @@ data_hym_rl <- read.csv2(
   sf::st_intersection(
     .,
     sitmap
+  ) %>%
+  dplyr::filter(
+    DATUM_OD >= lubridate::ymd("2013-01-01")
   )
 
 ## Diptera ----
