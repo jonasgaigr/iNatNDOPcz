@@ -161,6 +161,7 @@ sitmap <- sf::st_read(getfeature_url_sitmap1rad) %>%
 rn2kcz::load_n2k_sites()
 
 # load occurrence data ----
+## Coleoptera ----
 data_luccer <- read.csv2(
   "Data/Input/nalezy-luccer.csv",
   fileEncoding = "Windows-1250"
@@ -192,6 +193,7 @@ data_evd <- dplyr::bind_rows(
     sitmap
   )
 
+## Hymenoptera ----
 data_osmia <- read.csv2(
   "Data/Input/nalezy-osmia.csv", 
   fileEncoding = "Windows-1250"
@@ -253,3 +255,4 @@ data_hym_rl <- read.csv2(
     .,
     sitmap
   )
+
