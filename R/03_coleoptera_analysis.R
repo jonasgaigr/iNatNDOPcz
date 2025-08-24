@@ -67,3 +67,35 @@ write_csv2_win1250(
   inat_col_result,
   "Outputs/Data/inat_col_result.csv"
 )
+
+# Prepare your table
+tab <- inat_col_result %>%
+  # Optionally rename columns for clarity in the table
+  dplyr::rename(
+    Druh = DRUH,
+    `Počet SITMAP 0` = celkem_sitmap_0,
+    `Plně iNat (SITMAP 0)` = sitmap_0_plne_inat,
+    `% plně iNat (SITMAP 0)` = procento_0_plne_inat,
+    `Počet SITMAP 1` = celkem_1_sitmap,
+    `Plně iNat (SITMAP 1)` = sitmap_1_plne_inat,
+    `% plně iNat (SITMAP 1)` = procento_1_plne_inat,
+    `Červený seznam` = REDLIST
+  ) %>%
+  flextable() %>%
+  # Styling
+  autofit() %>%
+  theme_zebra() %>%
+  bold(part = "header") %>%
+  align(align = "center", part = "all") %>%
+  set_header_labels(
+    Druh = "Druh",
+    `Červený seznam` = "Červený seznam"
+  )
+
+# Export to Word
+doc <- read_docx() %>%
+  body_add_par("Výsledky Coleoptera – iNat pokrytí", style = "heading 1") %>%
+  body_add_flextable(tab) %>%
+  body_add_par("", style = "Normal")
+
+print(doc, target = "Outputs/Tables/inat_col_result.docx")
