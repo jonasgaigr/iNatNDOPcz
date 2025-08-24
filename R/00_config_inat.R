@@ -171,7 +171,7 @@ data_cuccin <- read.csv2(
   fileEncoding = "Windows-1250"
   )
 
-data_evd <- dplyr::bind_rows(
+data_col <- dplyr::bind_rows(
   data_luccer,
   data_cuccin
   ) %>%
