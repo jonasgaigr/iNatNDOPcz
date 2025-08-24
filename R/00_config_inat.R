@@ -166,6 +166,10 @@ data_luccer <- read.csv2(
   "Data/Input/nalezy-luccer.csv",
   fileEncoding = "Windows-1250"
   )
+data_cercer <- read.csv2(
+  "Data/Input/nalezy-cercer.csv", 
+  fileEncoding = "Windows-1250"
+)
 data_cuccin <- read.csv2(
   "Data/Input/nalezy-cuccin.csv", 
   fileEncoding = "Windows-1250"
@@ -173,6 +177,7 @@ data_cuccin <- read.csv2(
 
 data_col <- dplyr::bind_rows(
   data_luccer,
+  data_cercer,
   data_cuccin
   ) %>%
   dplyr::mutate(
