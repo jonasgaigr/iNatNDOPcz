@@ -1,7 +1,8 @@
-# Hymenoptera - all species ----
-inat_hym_sitmap0 <- 
-  data_hym %>%
+# Data - all species ----
+inat_sitmap0 <- 
+  data %>%
   dplyr::group_by(
+    KAT_TAX,
     DRUH, 
     SITMAP
   ) %>%
@@ -10,7 +11,9 @@ inat_hym_sitmap0 <-
     pocet_inat = sum(str_detect(ZDROJ, "iNat")),
     proc_inat = pocet_inat/pocet_n
     ) %>%
-  dplyr::group_by(DRUH) %>%
+  dplyr::group_by(
+    DRUH
+    ) %>%
   dplyr::reframe(
     celkem_sitmap_0 = n(),
     sitmap_0_plne_inat = sum(proc_inat == 1),
@@ -20,9 +23,10 @@ inat_hym_sitmap0 <-
     desc(procento_0_plne_inat)
   ) 
 
-inat_hym_sitmap1 <- 
-  data_hym %>%
+inat_sitmap1 <- 
+  data %>%
   dplyr::group_by(
+    KAT_TAX,
     DRUH, 
     SITMAP_1
     ) %>%
@@ -31,7 +35,9 @@ inat_hym_sitmap1 <-
     pocet_inat = sum(str_detect(ZDROJ, "iNat")),
     proc_inat = pocet_inat/pocet_n
     ) %>%
-  dplyr::group_by(DRUH) %>%
+  dplyr::group_by(
+    DRUH
+    ) %>%
   dplyr::reframe(
     celkem_1_sitmap = n(),
     sitmap_1_plne_inat = sum(proc_inat == 1),
@@ -41,10 +47,10 @@ inat_hym_sitmap1 <-
     desc(procento_1_plne_inat)
     ) 
 
-inat_hym_result <- 
+inat_result <- 
   dplyr::left_join(
-    inat_hym_sitmap0,
-    inat_hym_sitmap1
+    inat_sitmap0,
+    inat_sitmap1
   ) %>%
   dplyr::arrange(
     desc(procento_1_plne_inat),
@@ -52,9 +58,10 @@ inat_hym_result <-
     desc(celkem_1_sitmap)
   ) %>%
   dplyr::left_join(
-    data_hym %>%
+    data %>%
       dplyr::select(
         DRUH,
+        KAT_TAX,
         REDLIST
       ) %>%
       sf::st_drop_geometry()
@@ -62,10 +69,14 @@ inat_hym_result <-
   sf::st_drop_geometry() %>%
   dplyr::distinct()
 
-# Hymenoptera - Red list species ----
-inat_hym_rl_sitmap0 <-
-  data_hym_rl %>%
+# Data - Red list species ----
+inat_rl_sitmap0 <-
+  data %>%
+  dplyr::filter(
+    is.na(REDLIST) == FALSE
+  ) %>%
   dplyr::group_by(
+    KAT_TAX,
     DRUH, 
     SITMAP
   ) %>%
@@ -84,9 +95,13 @@ inat_hym_rl_sitmap0 <-
     desc(procento_0_plne_inat)
   ) 
 
-inat_hym_rl_sitmap1 <-
-  data_hym_rl %>%
+inat_rl_sitmap1 <-
+  data %>%
+  dplyr::filter(
+    is.na(REDLIST) == FALSE
+  ) %>%
   dplyr::group_by(
+    KAT_TAX,
     DRUH, 
     SITMAP_1
     ) %>%
@@ -105,24 +120,36 @@ dplyr::arrange(
   desc(procento_1_plne_inat)
   ) 
 
-inat_hym_rl_result <- 
+inat_rl_result <- 
   dplyr::left_join(
-  inat_hym_rl_sitmap0,
-  inat_hym_rl_sitmap1
+  inat_rl_sitmap0,
+  inat_rl_sitmap1
 ) %>%
   dplyr::arrange(
     desc(procento_1_plne_inat)
   ) %>%
   dplyr::left_join(
-    data_hym_rl %>%
+    data %>%
       dplyr::select(
         DRUH,
+        KAT_TAX,
         REDLIST
       ) %>%
       sf::st_drop_geometry()
   ) %>%
   sf::st_drop_geometry() %>%
   dplyr::distinct()
+
+# Compare Red List and LC/NE taxa
+ggplot(
+  data = inat_result, 
+  aes(
+    x = KAT_TAX, 
+    y = procento_1_plne_inat,
+    colour = REDLIST)
+  ) +
+  geom_boxplot()
+  
 
 # Write results ----
 write_csv2_win1250(
