@@ -104,41 +104,15 @@ data_cuccin <- read.csv2(
   fileEncoding = "Windows-1250"
   )
 
-data_col <- dplyr::bind_rows(
-  data_luccer,
-  data_cercer,
-  data_cuccin
-  ) %>%
-  dplyr::mutate(
-    DATUM_OD = lubridate::ymd(DATUM_OD),
-    DATUM_DO = lubridate::ymd(DATUM_OD),
-    NEGATIVNI = dplyr::case_when(
-      NEGATIV == "ne" ~ 0,
-      NEGATIV == "ano" ~ 1
-    )
-    )%>%
-  sf::st_as_sf(
-    ., 
-    coords = c("X", "Y"), 
-    crs = "+init=epsg:5514"
-    ) %>%
-  sf::st_intersection(
-    .,
-    sitmap
-  ) %>%
-  dplyr::filter(
-    DATUM_OD >= lubridate::ymd("2013-01-01")
-  )
-
 ## Hymenoptera ----
 data_osmia <- read.csv2(
   "Data/Input/nalezy-osmia.csv", 
   fileEncoding = "Windows-1250"
-  )
+)
 data_andrena <- read.csv2(
   "Data/Input/nalezy-andrena.csv", 
   fileEncoding = "Windows-1250"
-  )
+)
 data_halictus <- read.csv2(
   "Data/Input/nalezy-halictus.csv", 
   fileEncoding = "Windows-1250"
@@ -147,57 +121,10 @@ data_bombus <- read.csv2(
   "Data/Input/nalezy-bombus.csv", 
   fileEncoding = "Windows-1250"
 )
-data_hym <- dplyr::bind_rows(
-  data_osmia,
-  data_andrena,
-  data_halictus,
-  data_bombus
-  ) %>%
-  dplyr::mutate(
-    DATUM_OD = lubridate::ymd(DATUM_OD),
-    DATUM_DO = lubridate::ymd(DATUM_OD),
-    NEGATIVNI = dplyr::case_when(
-      NEGATIV == "ne" ~ 0,
-      NEGATIV == "ano" ~ 1
-      )
-    )%>%
-  sf::st_as_sf(
-    ., 
-    coords = c("X", "Y"), 
-    crs = "+init=epsg:5514"
-    ) %>%
-  sf::st_intersection(
-    .,
-    sitmap
-  ) %>%
-  dplyr::filter(
-    DATUM_OD >= lubridate::ymd("2013-01-01")
-  )
-
 data_hym_rl <- read.csv2(
   "Data/Input/nalezy-hym-rl.csv", 
   fileEncoding = "Windows-1250"
-  ) %>%
-  dplyr::mutate(
-    DATUM_OD = lubridate::ymd(DATUM_OD),
-    DATUM_DO = lubridate::ymd(DATUM_OD),
-    NEGATIVNI = dplyr::case_when(
-      NEGATIV == "ne" ~ 0,
-      NEGATIV == "ano" ~ 1
-      )
-    )%>%
-  sf::st_as_sf(
-    ., 
-    coords = c("X", "Y"),
-    crs = "+init=epsg:5514"
-    ) %>%
-  sf::st_intersection(
-    .,
-    sitmap
-  ) %>%
-  dplyr::filter(
-    DATUM_OD >= lubridate::ymd("2013-01-01")
-  )
+) 
 
 ## Diptera ----
 data_bombilius <- read.csv2(
@@ -205,9 +132,19 @@ data_bombilius <- read.csv2(
   fileEncoding = "Windows-1250"
 )
 
-data_dip <- dplyr::bind_rows(
+# Combine taxa ---- 
+data <- dplyr::bind_rows(
+  # Coleoptera
+  data_luccer,
+  data_cercer,
+  data_cuccin,
+  data_osmia,
+  data_andrena,
+  data_halictus,
+  data_bombus,
+  data_hym_rl,
   data_bombilius
-) %>%
+  ) %>%
   dplyr::mutate(
     DATUM_OD = lubridate::ymd(DATUM_OD),
     DATUM_DO = lubridate::ymd(DATUM_OD),
@@ -215,16 +152,26 @@ data_dip <- dplyr::bind_rows(
       NEGATIV == "ne" ~ 0,
       NEGATIV == "ano" ~ 1
     )
+    ) %>%
+  dplyr::filter(
+    DATUM_OD >= lubridate::ymd("2013-01-01")
   ) %>%
   sf::st_as_sf(
     ., 
     coords = c("X", "Y"), 
     crs = "+init=epsg:5514"
-  ) %>%
+    ) %>%
   sf::st_intersection(
     .,
     sitmap
   ) %>%
-  dplyr::filter(
-    DATUM_OD >= lubridate::ymd("2013-01-01")
-    )
+  sf::st_intersection(
+    .,
+    evl
+  ) %>%
+  sf::st_intersection(
+    .,
+    mzchu
+  )
+
+# END SCRIPT ----
