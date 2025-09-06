@@ -3,3 +3,5 @@ Quantifying the role of iNaturalist in providing species occurrence data in Czec
 - Hymenoptera 
 - Beeflies and hoverflies 
 - Beetle species under the Habitat's Directive
+
+The contribution is assessed by evaluating the percentage of mapping fields with species occurrence known a) exclusively based on iNaturalist records and b) on all records including those sourced from iNaturalist.
