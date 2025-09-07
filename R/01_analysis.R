@@ -140,17 +140,6 @@ inat_rl_result <-
   sf::st_drop_geometry() %>%
   dplyr::distinct()
 
-# Compare Red List and LC/NE taxa
-ggplot(
-  data = inat_result, 
-  aes(
-    x = KAT_TAX, 
-    y = procento_1_plne_inat,
-    colour = REDLIST)
-  ) +
-  geom_boxplot()
-  
-
 # Write results ----
 write_csv2_win1250(
   inat_hym_result,
