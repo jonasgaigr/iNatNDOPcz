@@ -142,12 +142,12 @@ inat_rl_result <-
 
 # Write results ----
 write_csv2_win1250(
-  inat_hym_result,
-  "Outputs/Data/inat_hym_result.csv"
+  inat_result,
+  "Outputs/Data/inat_result.csv"
 )
 
 write_csv2_win1250(
-  inat_hym_rl_result,
-  "Outputs/Data/inat_hym_rl_result.csv"
+  inat_rl_result,
+  "Outputs/Data/inat_rl_result.csv"
 )
 
